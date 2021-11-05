@@ -54,7 +54,45 @@ const restaurant = {
   },
 };
 
-/**  */
+/** The Nuliish Coalescing Operator (??) 
+restaurant.numGuests = 0;
+const guests = restaurant.numGuests || 10;
+console.log(guests);
+
+// Nullish: null or undefined (NOT 0 or '')
+const guestCorrect = restaurant.numGuests ?? 10;
+console.log(guestCorrect);
+*/
+
+/** Short circuiting  - Use ANY data type, return any data type
+console.log('-------- OR --------');
+console.log(3 || 'Fabio');
+console.log('' || 'Fabio');
+console.log(true || 0);
+console.log(undefined || null);
+
+console.log(undefined || 0 || '' || 'Hello' || 23 || null); // Hello is the first truthy value in the comparison
+
+restaurant.numGuests = 23;
+const guests1 = restaurant.numGuests ? restaurant.numGuests : 10;
+console.log(guests1);
+
+const guests2 = restaurant.numGuests || 10;
+console.log(guests2);
+
+console.log('-------- AND --------');
+console.log(0 && 'Fabio');
+console.log(7 && 'Fabio');
+console.log('Hello' && 23 && null && 'Fabio');
+console.log('Hello' && 23 && 1 && 'Fabio');
+
+// Practical example
+if (restaurant.orderPizza) {
+  restaurant.orderPizza('mushrooms', 'spinach');
+}
+// Same as the if above
+restaurant.orderPizza && restaurant.orderPizza('mushrooms', 'spinach');
+*/
 
 /** Rest pattern and parameters
  * Rest pattern -> to collect object and pack it into an array
