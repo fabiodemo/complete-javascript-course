@@ -51,7 +51,128 @@ const restaurant = {
   },
 };
 
-/** Looping Objects: Object Keys, Values, and Entries */
+/** Summary: Which Data Structure to Use?
+ * Array and sets should be used when we do not need to describe the values, for simple lists of values;
+ * Use arrays when we need to manipulate data;
+ * Use sets to remove duplicates from arrays (when we need to work with unique values);
+ * Objects are more traditional and are easir to write and access values with . and [];
+ *  * Used when we need to include functions (methods)
+ *  * Use when working with JSON (we can convert to map)
+ * Maps can have any data type, better performance, easier to iterate and easy to compute size;
+ *  * Used when we simply need to map key to values
+ *  * Use when you need keys that are not strings
+ */
+
+/** Maps: Iteration 
+const question = new Map([
+  ['question', 'What is the best programming language in the world?'],
+  [1, 'C'],
+  [2, 'Java'],
+  [3, 'JavaScript'],
+  ['correct', 3],
+  [true, 'Correct! '],
+  [false, 'Try again!'],
+]);
+
+console.log(question);
+
+// Convert objects to map
+console.log(Object.entries(openingHours));
+const hoursMap = new Map(Object.entries(openingHours));
+console.log(hoursMap);
+
+//Quiz app
+console.log(question.get('question'));
+for (const [key, value] of question) {
+  if (typeof key === 'number') console.log(`Answer ${key}: ${value}`);
+}
+const answer = Number(prompt('Your answer'));
+console.log(answer);
+
+console.log(question.get(answer === question.get('correct')));
+
+// Convert Map back to array
+console.log([...question]);
+console.log(question.entries());
+console.log([...question.keys()]);
+console.log([...question.values()]);
+*/
+
+/** Maps: Fundamentals 
+const rest = new Map();
+rest.set('name', 'Classico Italiano');
+rest.set(1, 'Firenze, Italy');
+console.log(rest.set(2, 'Lisbon, Portugal'));
+
+rest
+  .set('categories', ['Italian', 'Pizzeria', 'Vegetarian', 'Organic'])
+  .set('Open', 11)
+  .set('Close', 23)
+  .set(true, 'We are open :D')
+  .set(false, 'We are closed :(');
+console.log(rest);
+console.log(rest.get('name'));
+console.log(rest.get(true));
+// We cannot use as string like console.log(rest.get('1'));
+console.log(rest.get(1));
+
+// Don't use this, just to show how to use it
+const time = 21;
+console.log(rest.get(time > rest.get('Open') && time < rest.get('Close')));
+
+console.log(rest.has('categories'));
+rest.delete(2);
+// rest.clear();
+const arr = [1, 2];
+rest.set(arr, 'Test');
+rest.set(document.querySelector('h1'), 'Heading');
+console.log(rest);
+console.log(rest.size);
+
+// console.log(rest.get([1, 2])); // Will not work, because it is not the same object in the key
+console.log(rest.get(arr)); // This will work because the object is the same space in memory
+*/
+
+/** Sets
+ * Collection of Unique values
+const ordersSet = new Set(['Pasta', 'Pizza', 'Pizza', 'Risotto', 'Pizza']);
+console.log(ordersSet);
+console.log(new Set('Fabio'));
+
+// Sets uses size instead of length
+console.log(ordersSet.size);
+// Sets uses has instead of includes
+console.log(ordersSet.has('Pizza'));
+console.log(ordersSet.has('Bread'));
+ordersSet.add('Garlic Bread');
+ordersSet.add('Garlic Bread');
+console.log(ordersSet);
+ordersSet.delete('Risotto');
+console.log(ordersSet);
+
+// In sets we cannot use indexes like ordersSet[0]
+// We cannot retrieve values of a set, but we can verify if it alredy exists in a set
+
+// We can iterate over a set
+for (const order of ordersSet) console.log(order);
+
+// Example
+const staff = ['Waiter', 'Chef', 'Waiter', 'Manager', 'Chef', 'Waiter'];
+const staffUniqueSet = new Set(staff);
+console.log(staffUniqueSet);
+// Convert set to an array
+const staffUniqueArray = [...staffUniqueSet];
+console.log(staffUniqueArray);
+
+// If we just need to count the unique values, this is the way to go
+console.log(
+  new Set(['Waiter', 'Chef', 'Waiter', 'Manager', 'Chef', 'Waiter']).size
+);
+
+console.log(new Set('fabiodemo').size);
+*/
+
+/** Looping Objects: Object Keys, Values, and Entries 
 const properties = Object.keys(openingHours);
 console.log(Object.keys(openingHours));
 
@@ -70,6 +191,7 @@ for (const [day, { open, close }] of entries)
   console.log(`On ${day} we open at ${open} and close at ${close}`);
 
 // for (const day of Object.keys(openingHours)) console.log(day);
+*/
 
 /** Optional Chaining (?,) 
 if (restaurant.openingHours && restaurant.openingHours.mon)
