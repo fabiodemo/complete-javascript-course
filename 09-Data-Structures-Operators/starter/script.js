@@ -1,4 +1,4 @@
-'use strict';
+ 'use strict';
 
 // Data needed for a later exercise
 const flights =
@@ -50,6 +50,56 @@ const restaurant = {
     console.log(otherIngredients);
   },
 };
+
+/** Strings - part 2 */
+
+
+
+/** Strings - part 1 
+const airline = 'TAP Air Portugal';
+const plane= 'A328';
+console.log(plane[0]);
+console.log(plane[1]);
+console.log(plane[2]);
+console.log('B737'[0]);
+
+console.log(airline.length);
+console.log('B737'.length);
+
+console.log(airline.indexOf('r'));
+console.log(airline.lastIndexOf('r'));
+console.log(airline.indexOf('Portugal'));
+
+// Slice remove the string after the specified index
+console.log(airline.slice(4));
+// Slice with an end parameter
+console.log(airline.slice(4,7));
+
+console.log(airline.slice(0,airline.indexOf(' ')));
+console.log(airline.slice(airline.lastIndexOf(' ')+ 1));
+
+// Start slicing from the end
+console.log(airline.slice(-2));
+console.log(airline.slice(1, -3));
+
+const checkMiddleSeat = function (seat){
+  //B and E are middle seats
+  const s = seat.slice(-1);
+  if(s === 'B' || s === 'E') console.log('You got the middle seat');
+  else
+  console.log('You got lucky');
+}
+
+checkMiddleSeat('11B');
+checkMiddleSeat('23C');
+checkMiddleSeat('3E');
+
+// JavaScript create an object when we create them, and it convert back to string/primitive at the end of the creation
+console.log(new String('Fabio'));
+console.log(typeof new String('Fabio'));
+console.log(typeof new String('Fabio').slice());
+*/
+
 
 /** Summary: Which Data Structure to Use?
  * Array and sets should be used when we do not need to describe the values, for simple lists of values;

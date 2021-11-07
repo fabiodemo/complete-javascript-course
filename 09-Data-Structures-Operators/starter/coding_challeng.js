@@ -189,31 +189,30 @@ const gameEvents = new Map([
   [92, '🔶 Yellow card'],
 ]);
 
-console.log([...gameEvents]);
+//console.log([...gameEvents]);
 // console.log(gameEvents.entries());
-console.log([...gameEvents.keys()]);
+//console.log([...gameEvents.keys()]);
 // console.log([...gameEvents.values()]);
-let [...events] = new Set([...gameEvents.values()]);
+const events = [...new Set(gameEvents.values())];
 console.log(events);
 
 gameEvents.delete(64);
 console.log(gameEvents);
 
-const test = [...gameEvents.keys()];
-console.log(test);
+console.log(`An event happened, on average, every ${(90/gameEvents.size)} minutes`);
 
-console.log(test.length);
+const time = [...gameEvents.keys()].pop();
+console.log(`An event happened, on average, every ${(time/gameEvents.size)} minutes`);
 
-let avg = 0;
-for (const i of test) avg += i;
-console.log(`An event happened, on average, every ${(avg /= 90)} minutes`);
+//const test = [...gameEvents.keys()];
+//console.log(test);
+//console.log(test.length);
 
 for (const [key, value] of gameEvents) {
-  const eventStr =
-    key <= 45
-      ? `[FIRST HALF] ${key}: ${value}`
-      : `[SECOND HALF] ${key}: ${value}`;
-  console.log(eventStr);
+  const half = key <= 45 ? `FIRST` : `SECOND`;
+  // const eventStr = key <= 45 ? `[FIRST HALF] ${key}: ${value}` : `[SECOND HALF] ${key}: ${value}`;
+  //console.log(eventStr);
+  console.log(`[${half} HALF] ${key}: ${value}` )
 }
 
 /** Coding Challenge #4
