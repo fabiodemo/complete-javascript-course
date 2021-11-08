@@ -1,4 +1,4 @@
- 'use strict';
+'use strict';
 
 // Data needed for a later exercise
 const flights =
@@ -52,8 +52,60 @@ const restaurant = {
 };
 
 /** Strings - part 2 */
+const airline = 'TAP Air Portugal';
 
+console.log(airline.toLowerCase());
+console.log(airline.toUpperCase());
 
+// Fix capitalization in name
+const passenger = 'jOnaS'; // Should be Jonas
+const passengerLower = passenger.toLowerCase();
+const passengerCorrect =
+  passengerLower[0].toUpperCase() + passengerLower.slice(1);
+console.log(passengerCorrect);
+
+// Comparing emails
+const email = 'hello@fabio.io';
+const loginEmail = '  Hello@fabio.Io \n';
+// const lowerEmail = loginEmail.toLocaleLowerCase();
+// const trimmedEmail = lowerEmail.trim();
+const normalizedEmail = loginEmail.toLocaleLowerCase().trim();
+console.log(normalizedEmail);
+console.log(email === normalizedEmail);
+
+// Replacing
+const priceGB = '288,96£';
+const priceUS = priceGB.replace('£', '$').replace(',', '.');
+console.log(priceUS);
+
+const announcement =
+  'All passenger come to boarding door 23, boarding door 23!';
+// Only replace the first occurrence
+console.log(announcement.replace('door', 'gate'));
+// Replace all the occurrences
+console.log(announcement.replaceAll('door', 'gate'));
+
+// Booleans
+const plane = 'Airbus a320neo';
+console.log(plane.includes('a320'));
+console.log(plane.includes('Boeing'));
+console.log(plane.startsWith('Air'));
+
+if (plane.startsWith('Airbus') && plane.endsWith('neo'))
+  console.log('Part of the NEW Airbus Family!');
+
+// Practice exercise
+const checkBaggage = function (item) {
+  // With we didn't transform to lowercase, we would have to cover all possibilities of writing by the users
+  const baggage = item.toLowerCase();
+
+  if (baggage.includes('knife') || baggage.includes('gun'))
+    console.log('You are NOT Allowed on board!');
+  else console.log('Welcome aboard!');
+};
+checkBaggage('I have a laptop, some Food and a pocket Knife');
+checkBaggage('I have socks and a camera');
+checkBaggage('Got some snacks and a GUN for PROTECTION!');
 
 /** Strings - part 1 
 const airline = 'TAP Air Portugal';
@@ -99,7 +151,6 @@ console.log(new String('Fabio'));
 console.log(typeof new String('Fabio'));
 console.log(typeof new String('Fabio').slice());
 */
-
 
 /** Summary: Which Data Structure to Use?
  * Array and sets should be used when we do not need to describe the values, for simple lists of values;
