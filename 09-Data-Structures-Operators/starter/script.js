@@ -1,9 +1,10 @@
 'use strict';
 
-// Data needed for a later exercise
+/**  String Methods Practice */
 const flights =
   '_Delayed_Departure;fao93766109;txl2133758440;11:25+_Arrival;bru0943384722;fao93766109;11:45+_Delayed_Arrival;hel7439299980;fao93766109;12:05+_Departure;fao93766109;lis2323639855;12:30';
 const weekdays = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+
 const openingHours = {
   [weekdays[3]]: {
     open: 12,
@@ -51,7 +52,78 @@ const restaurant = {
   },
 };
 
-/** Strings - part 2 */
+// 🔴 Delayed Departure from FAO to TXL (11h25)
+//        Arrival from BRU to FAO (11h45)
+// 🔴 Delayed Arrival from HEL to FAO (11h20)
+//        Departure from FAO to LIS (11h20)
+console.log(`original string: ${flights}`);
+console.log(flights.split('+'));
+
+// refactor
+const getcode = str => str.slice(0, 3).toUpperCase();
+
+for (const flight of flights.split('+')) {
+  const [type, from, to, time] = flight.split(';');
+  const output = `${type.startsWith('_Delayed') ? '🔴' : ''}${type.replaceAll(
+    '_',
+    ' '
+  )} ${getcode(from)} ${getcode(to)} (${time.replace(':', 'h')})`.padStart(30);
+  console.log(output);
+}
+
+/** Strings - part 3 
+console.log('a+very+nice+string'.split('+'));
+console.log('Fabio Demo'.split(' '));
+
+const [firstName, lastName] = 'Fabio Demo'.split(' ');
+
+const newName = ['Mr.', firstName, lastName.toUpperCase()].join(' ');
+console.log(['Mr.', firstName, lastName.toUpperCase()].join('---'));
+console.log(newName);
+
+const capitalizeName = function (name) {
+  const names = name.split(' ');
+  const namesUpperCase = [];
+
+  for (const n of names) {
+    // namesUpperCase.push(n[0].toUpperCase() + n.slice(1));
+    namesUpperCase.push(n.replace(n[0], n[0].toUpperCase()));
+  }
+  console.log(namesUpperCase.join(' '));
+};
+
+capitalizeName('jessica ann smith davis');
+capitalizeName('fabio demo');
+
+// Padding
+const message = 'Go to gate 23!';
+console.log(message.padStart(25, '+'));
+console.log('msg'.padStart(25, '+').padEnd(35, '+'));
+
+const maskCreditCard = function (number) {
+  console.log(number);
+  const str = number + '';
+  const last = str.slice(-4);
+  // console.log(last);
+  return last.padStart(str.length, '*');
+};
+
+console.log(maskCreditCard(1203920395409304));
+console.log(maskCreditCard(78350394));
+console.log(maskCreditCard('12039203954093043'));
+
+// Repeat
+const message2 = 'Bad weather... All departures delayed... ';
+console.log(message2.repeat(5));
+
+const planesInLine = function (n) {
+  console.log(`There are ${n} planes in the line ${'✈️'.repeat(n)}`);
+};
+planesInLine(5);
+planesInLine(15);
+*/
+
+/** Strings - part 2 
 const airline = 'TAP Air Portugal';
 
 console.log(airline.toLowerCase());
@@ -106,6 +178,7 @@ const checkBaggage = function (item) {
 checkBaggage('I have a laptop, some Food and a pocket Knife');
 checkBaggage('I have socks and a camera');
 checkBaggage('Got some snacks and a GUN for PROTECTION!');
+*/
 
 /** Strings - part 1 
 const airline = 'TAP Air Portugal';

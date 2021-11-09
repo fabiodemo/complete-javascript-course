@@ -173,7 +173,7 @@ Your tasks:
  GOAL
 GOOD LUCK 😀
  * 
- */
+
 
 const gameEvents = new Map([
   [17, '⚽️ GOAL'],
@@ -214,6 +214,7 @@ for (const [key, value] of gameEvents) {
   //console.log(eventStr);
   console.log(`[${half} HALF] ${key}: ${value}` )
 }
+ */
 
 /** Coding Challenge #4
 Write a program that receives a list of variable names written in underscore_case and convert them to camelCase.
@@ -244,3 +245,22 @@ Afterwards, test with your own test data!
 GOOD LUCK 😀
  * 
  */
+document.body.append(document.createElement('textarea'));
+document.body.append(document.createElement('button'));
+
+document.querySelector('button').addEventListener('click', function () {
+  const text = document.querySelector('textarea').value.toLowerCase();
+  const splittedtext = text.split(`\n`);
+  // console.log(splittedtext);
+
+  for (const [i, t] of splittedtext.entries()) {
+    let splittedT = t.trim().split('_');
+    // console.log(splittedT[1][0].toUpperCase() + splittedT[1].slice(1));
+    // console.log(splittedT[0] + splittedT[1]);
+    console.log(
+      `${
+        splittedT[0] + (splittedT[1][0].toUpperCase() + splittedT[1].slice(1))
+      } ${'✅'.repeat(i + 1)}`
+    );
+  }
+});
