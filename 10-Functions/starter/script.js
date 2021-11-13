@@ -67,7 +67,7 @@ checkIn(flight, fabio);
 /** First-Class and Higher-Order Functions
  * There is no first-class functions in practice, is just a concept;
  * There are Higher-Order functions in practice
- */
+ 
 // First-Class
 const dd = (a, b) => a + b;
 const counter = {
@@ -88,3 +88,66 @@ function count() {
     counter++;
   };
 }
+*/
+
+/** Functions Accepting Callback Functions
+ * Callback functions are easier to use/read and are really helpful
+ * Callback functions allow to call abstraction
+
+
+
+const oneWord = function (str) {
+  return str.replace(/ /g, '').toLowerCase();
+};
+
+const upperFirstWord = function (str) {
+  const [first, ...others] = str.split(' ');
+  return [first.toUpperCase(), ...others].join(' ');
+};
+
+const transformer = function (str, fn) {
+  console.log(`original string: ${str}`);
+  console.log(`Transformed string: ${fn(str)}`);
+
+  //function haves properties
+  console.log(`Transformed by: ${fn.name}`);
+};
+
+transformer('JavaScript is the best!', upperFirstWord);
+transformer('JavaScript is the best!', oneWord);
+
+const high5 = function () {
+  console.log('🖐️');
+};
+
+document.body.addEventListener('click', high5);
+
+['Jonas', 'Martha', 'Adam'].forEach(high5);
+*/
+
+/** Functions Returning Functions 
+
+const greet = function (greeting) {
+  return function (name) {
+    console.log(`${greeting} ${name}`);
+  };
+};
+
+// const greeterHey = greet('Hey');
+// greeterHey('Fabio');
+// greeterHey('Steven');
+
+greet('Hello')('Fabio');
+
+// My version
+// const greetArrow = greeting => {
+//   return name => {
+//     console.log(`${greeting} ${name}`);
+//   };
+// };
+const greetArrow = greeting => name => console.log(`${greeting} ${name}`);
+
+greetArrow('Hi, Arrow')('Fabio');
+*/
+
+/** The Call and Apply Methods */
