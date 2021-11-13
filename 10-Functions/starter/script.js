@@ -151,3 +151,114 @@ greetArrow('Hi, Arrow')('Fabio');
 */
 
 /** The Call and Apply Methods */
+
+// Call Method
+const lufthansa = {
+  airline: 'Lufthansa',
+  iataCode: 'LH',
+  bookings: [],
+  // Or book: function(){}
+  book(flightNum, name) {
+    console.log(
+      `${name}, booked a set on ${this.airline} flight ${this.iataCode}${flightNum}`
+    );
+    this.bookings.push({ flight: `${this.iataCode}${flightNum}`, name });
+  },
+};
+
+lufthansa.book(239, 'Fábio Demo');
+lufthansa.book(666, 'John Smith');
+
+const eurowings = {
+  airline: 'Eurowings',
+  iataCode: 'Ew',
+  bookings: [],
+};
+
+// It is not a method anymore, it is just a function. It will pass undefined to this keywords
+const book = lufthansa.book;
+
+//Just not work
+// book(23, 'Sarah Williams')
+
+//Manipulating the "this" keyword using the "call" method
+book.call(eurowings, 23, 'Sarah Williams');
+console.log(eurowings);
+
+book.call(lufthansa, 23, 'Connor Williams');
+console.log(lufthansa);
+
+//All objects using the call, must have the same structure and properties names than the original/initial object
+const swiss = {
+  airline: 'Swiss Airlines',
+  iataCode: 'LX',
+  bookings: [],
+};
+book.call(swiss, 583, 'Mary Cooper');
+console.log(swiss);
+
+// Apply Method -- apply doesn't receive a list of arguments after the "this" keyword, and it will take an array of arguments
+
+const flightData = [583, 'Sheldon Cooper'];
+// Both are the same
+book.apply(swiss, flightData);
+book.call(swiss, ...flightData);
+
+/** The Bind Method */
+
+// We used book.call(eurowings, 23, 'Sarah Williams');
+//Now we use
+const bookLU = book.bind(lufthansa);
+const bookLH = book.bind(eurowings);
+const bookLX = book.bind(swiss);
+
+bookLH(23, 'Steven Williams');
+console.log(lufthansa.bookings);
+// Te code above entered on the array of bookings inside lufthansa.
+
+const bookEw23 = book.bind(eurowings, 23);
+bookEw23('Jonas Kahnwald');
+bookEw23('Martha Nielsen');
+
+// Using objects together with event listeners
+lufthansa.planes = 300;
+
+// This keyword is setted dynamically
+lufthansa.buyPlane = function () {
+  console.log(this);
+
+  this.planes++;
+  console.log(this.planes);
+};
+// lufthansa.buyPlane();
+
+document
+  .querySelector('.buy')
+  .addEventListener('click', lufthansa.buyPlane.bind(lufthansa));
+
+// Partial application - parts of the applicaiton of the original function are alredy applied/set. Below the 23 is alredy specified.
+// The order of the arguments is VERY IMPORTANT
+const addTax = (rate, value) => value + value * rate;
+console.log(addTax(0.1, 200));
+
+// Preset the rate for every value we pass to it
+const addVAT = addTax.bind(null, 0.23);
+// addVat = value => value + value *0.23; // Equals to using this
+
+console.log(addVAT(100));
+console.log(addVAT(23));
+
+// This is the same as the function above using the bind method
+const addTaxRate = function (rate) {
+  return function (value) {
+    return value + value * rate;
+  };
+};
+const addVAT2 = addTaxRate(0.23);
+console.log(addVAT2(100));
+console.log(addVAT2(23));
+
+const addTaxRateArrow = rate => value => value + value * rate;
+const addVATArrow = addTaxRate(0.23);
+console.log(addVATArrow(100));
+console.log(addVATArrow(23));
