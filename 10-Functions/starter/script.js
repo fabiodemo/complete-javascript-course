@@ -150,7 +150,7 @@ const greetArrow = greeting => name => console.log(`${greeting} ${name}`);
 greetArrow('Hi, Arrow')('Fabio');
 */
 
-/** The Call and Apply Methods */
+/** The Call and Apply Methods 
 
 // Call Method
 const lufthansa = {
@@ -203,8 +203,9 @@ const flightData = [583, 'Sheldon Cooper'];
 // Both are the same
 book.apply(swiss, flightData);
 book.call(swiss, ...flightData);
+*/
 
-/** The Bind Method */
+/** The Bind Method 
 
 // We used book.call(eurowings, 23, 'Sarah Williams');
 //Now we use
@@ -262,3 +263,93 @@ const addTaxRateArrow = rate => value => value + value * rate;
 const addVATArrow = addTaxRate(0.23);
 console.log(addVATArrow(100));
 console.log(addVATArrow(23));
+*/
+
+/** IIFE - Imeddiatly Invoked Function Expressions 
+
+const runOnce = function () {
+  console.log('this will never run again');
+}
+runOnce();
+
+(function() {
+  console.log('this will never run again');
+})();
+
+(() => console.log('this will never run again'))();
+
+// avoid using var
+{
+  const isPrivate = 23;
+  var notPrivate = 43;
+}
+// console.log(isPrivate);
+console.log(notPrivate);
+*/
+
+/** Closures 
+ * Is the closed-over variable environment of theexecution context in which a function was created, even after that execution context is gone OR LESS FORMAL -> gives a function access to all variables of its parente function, even after that parent function has returned.
+ * not a feature that we explicity use
+ * happens automatically in certain situations
+
+const secureBooking = function() {
+  let passengerCount = 0;
+
+  return function(){
+    passengerCount++;
+    console.log(`${passengerCount} passengers`);
+  }
+}
+
+const booker = secureBooking();
+booker();
+booker();
+booker();
+console.dir(booker);
+*/
+
+/** More closure exples */
+let f;
+
+const g = function(){
+  const a = 23;
+  f = function(){
+    console.log(a * 2);
+  }
+}
+
+const h = function() {
+  const b = 777;
+  f = function(){
+    console.log(b * 2);
+  }
+}
+
+g();
+f();
+
+// Re-assignin f function
+h();
+f();
+// console.dir(f);
+
+// Example 2
+const boardPassengers = function (n, wait) {
+  const perGroup = n/3;
+
+  setTimeout(function() {
+    console.log(`We are now boarding all ${n} passengers`);
+    console.log(`There are 3 groups, each with ${perGroup} passengers`);
+  }, wait * 1000);
+
+  console.log(`Will start boarding in ${wait} seconds`);
+}
+
+// Timer of one second 
+// setTimeout(function () {
+//   console.log(`TIMER`);
+// }, 1000);
+
+// Closure have priority over scope chain
+// const perGroup = 1000;
+boardPassengers(100, 3);
