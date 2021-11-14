@@ -40,16 +40,49 @@ Hints: Use many of the tools you learned about in this and the last section 😉
  */
 
 const poll = {
-    question: "What is your favourite programming language?",
-    options: ["0: JavaScript", "1: Python", "2: Rust", "3: C++"],
-    // This generates [0, 0, 0, 0]. More in the next section!
-    answers: new Array(4).fill(0),
+  question: 'What is your favourite programming language?',
+  options: ['0: JavaScript', '1: Python', '2: Rust', '3: C++'],
+  // This generates [0, 0, 0, 0]. More in the next section!
+  answers: new Array(4).fill(0),
 
-    registerNewAnswer(){
-        prompt(`What is your favourite programming language?
+  registerNewAnswer() {
+    let numberSelected = Number(
+      prompt(`What is your favourite programming language?
         0: JavaScript
         1: Python
         2: Rust
-        3: C++`);
+        3: C++`)
+    );
+
+    while (numberSelected < 0 || numberSelected > 3) {
+      numberSelected = prompt(`wrong number!
+                What is your favourite programming language?
+                0: JavaScript
+                1: Python
+                2: Rust
+                3: C++`);
     }
+    poll.answers[numberSelected]++;
+    this.displayResults(this.answers.join(', '));
+  },
+
+  displayResults(type = 'array') {
+    if (type === 'array') console.log(this.answers);
+    // If send as an array
+    else if (type === 'string') {
+      console.log(`Poll results are ${this.answers.join(', ')}`);
+      console.log(`type of: ${typeof this.answers}`);
+    }
+  },
 };
+
+document
+  .querySelector('.poll')
+  .addEventListener('click', poll.registerNewAnswer.bind(poll));
+
+// § Data 1: [5, 2, 3]
+// § Data 2: [1, 5, 3, 9, 6, 1]
+
+poll.displayResults.call({ answers: [5, 2, 3] }, 'string');
+poll.displayResults.call({ answers: [1, 5, 3, 9, 6, 1] }, 'string');
+poll.displayResults.call({ answers: [1, 5, 3, 9, 6, 1] });
