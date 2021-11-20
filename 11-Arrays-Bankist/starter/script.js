@@ -61,10 +61,13 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-const displayMovements = function (movements) {
+const displayMovements = function (movements, sort = false) {
   containerMovements.innerHTML = '';
 
-  movements.forEach(function (mov, i) {
+  // Create a copy using a slice method, to not mutate the original array
+  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+
+  movs.forEach(function (mov, i) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
 
     const html = `
@@ -137,7 +140,7 @@ const calcDisplaySummary = function (acc) {
     .filter(mov => mov > 0)
     .map(deposit => (deposit * acc.interestRate) / 100)
     .filter((int, i, arr) => {
-      console.log(arr);
+      // console.log(arr);
       return int >= 1;
     })
     .reduce((acc, int) => acc + int, 0);
@@ -235,6 +238,13 @@ btnClose.addEventListener('click', function (e) {
 
     inputCloseUsername.value = inputClosePin.value = '';
   }
+});
+
+let sorted = false;
+btnSort.addEventListener('click', function (e) {
+  e.preventDefault();
+  displayMovements(currentAccount.movements, !sorted);
+  sorted = !sorted;
 });
 
 /** simple array methods
@@ -436,4 +446,186 @@ console.log(movements.every(deposit));
 console.log(movements.filter(deposit));
 */
 
-/** Flat and Flatmap */
+/** Flat and Flatmap 
+const arr = [[1, 2, 3], [4, 5, 6], 7, 8];
+console.log(arr.flat());
+
+const arrDeep = [[[1, 2, 3]], [4, [5, 6]], 7, 8];
+console.log(arrDeep.flat());
+console.log(arrDeep.flat(1));
+console.log(arrDeep.flat(2));
+
+// const accountMovements = accounts.map(acc => acc.movements);
+// console.log(accountMovements);
+// const allMovements = accountMovements.flat();
+// console.log(allMovements);
+// const overalBalance = allMovements.reduce((acc, mov) => acc + mov, 0);
+// Code above with flat
+const overalBalance = accounts
+  .map(acc => acc.movements)
+  .flat()
+  .reduce((acc, mov) => acc + mov, 0);
+console.log(overalBalance);
+
+// Code above with flatmap - only goes one level deep in the array
+const overalBalance2 = accounts
+  .flatMap(acc => acc.movements)
+  .reduce((acc, mov) => acc + mov, 0);
+console.log(overalBalance2);
+*/
+
+/** Sorting Arrays 
+const owners = ['Jonas', 'Zach', 'Adam', 'Martha'];
+// Sort mutates the original array
+console.log(owners.sort());
+
+console.log(movements);
+// Sort is based on strings, first convert to string and then sorts
+// console.log(movements.sort());
+
+// return < 0 -> A, B (keep order)
+// return > 0 => B, A (switch order)
+
+// Ascending
+movements.sort((a, b) => a - b);
+console.log(movements);
+
+// Descending
+movements.sort((a, b) => {
+  return a < b;
+});
+console.log(movements);
+*/
+
+/** More ways of creating and Filling Arrays 
+const arr = [1, 2, 3, 4, 5, 6, 7];
+console.log(new Array(1, 2, 3, 4, 5, 6, 7));
+
+// Create an array with 7 empty positions
+const x = new Array(7);
+console.log(x);
+
+// x.fill(1);
+x.fill(1, 3, 5); //begin and ende parameter
+console.log(x);
+
+arr.fill(23, 2, 6);
+console.log(arr);
+
+// Array.from
+const y = Array.from({ length: 7 }, () => 1);
+console.log(y);
+const z = Array.from({ length: 7 }, (_, i) => i + 1);
+console.log(z);
+
+// We can add event listener to every DOM object (not necessarily only buttons)
+labelBalance.addEventListener('click', function () {
+  const movementsUI = Array.from(
+    document.querySelectorAll('.movements__value'),
+    elements => Number(elements.textContent.replace('€', ''))
+  );
+  console.log(movementsUI);
+
+  // We could do this, as well, to select all elements
+  // const movementsUI2 = [...document.querySelectorAll('.movements__value')]
+  // console.log(movementsUI2);
+});
+*/
+
+/** Which Array Method to Use */
+// To mutate original Array
+// // Add to original:
+// // // .push
+// // // .unshift
+// // Remove from original:
+// // // .pop
+// // // .shift
+// // // .splice
+// // Others:
+// // // .reverse
+// // // .sort
+// // // .fill
+
+// A new array
+// // Computed from original:
+// // // .map
+// // FIltered using condition:
+// // // .filter
+// // Portion of original:
+// // // .slice
+// // Adding original to other:
+// // // .concat
+// // Flattening the original:
+// // // .flat
+// // // .flatMap
+
+// An array index
+// // Based on value:
+// // // .indexOf
+// // Based on test condition:
+// // // .findIndex
+// // Based on test condition:
+// // // .find
+
+// Know if array includes
+// // Based on value:
+// // // .includes
+// // Based on test condition:
+// // // .some
+// // // .every
+// // Based on separator string:
+// // // .join
+
+// To transform to value
+// // Based on accumulator:
+// // // .reduce
+// // Based on callback:
+// // // .forEach
+
+/** Array Methods Practice */
+const bankDepositSum = accounts
+  .flatMap(acc => acc.movements)
+  .filter(mov => mov > 0)
+  .reduce((sum, cur) => sum + cur, 0);
+
+console.log(bankDepositSum);
+
+const numDeposits1000 = accounts
+  .flatMap(acc => acc.movements)
+  .reduce((count, cur) => (cur >= 1000 ? ++count : count), 0);
+console.log(numDeposits1000);
+
+// Prefixed ++ operator
+let a = 10;
+console.log(a++);
+console.log(a);
+
+const { deposits, withdrawals } = accounts
+  .flatMap(acc => acc.movements)
+  .reduce(
+    (sums, cur) => {
+      // cur > 0 ? (sums.deposits += cur) : (sums.withdrawals += cur);
+      sums[cur > 0 ? 'deposits' : 'withdrawals'] += cur;
+      return sums;
+    },
+    { deposits: 0, withdrawals: 0 }
+  );
+console.log(deposits, withdrawals);
+
+// this is a nice title -> This Is a Nice Title
+const convertTitleCase = function (title) {
+  const capitalize = str => str[0].toUpperCase() + str.slice(1);
+  const exceptions = ['a', 'an', 'and', 'the', 'but', 'or', 'on', 'in', 'with'];
+
+  const titleCase = title
+    .toLowerCase()
+    .split(' ')
+    .map(word => (exceptions.includes(word) ? word : capitalize(word)))
+    .join(' ');
+
+  return capitalize(titleCase);
+};
+
+console.log(convertTitleCase('this is a nice title'));
+console.log(convertTitleCase('this is a LONG title but not too long'));
+console.log(convertTitleCase('and here is another title with an EXAMPLE'));
