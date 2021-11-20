@@ -61,6 +61,48 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
+const displayMovements = function (movements) {
+  containerMovements.innerHTML = '';
+
+  movements.forEach(function (mov, i) {
+    const type = mov > 0 ? 'deposit' : 'withdrawal';
+
+    const html = `
+      <div class="movements__row">
+        <div class="movements__type movements__type--${type}">${
+      i + 1
+    } ${type}</div>
+        <div class="movements__date">3 days ago</div>
+        <div class="movements__value">${mov}€</div>
+      </div>
+     `;
+
+    containerMovements.insertAdjacentHTML('afterbegin', html);
+  });
+};
+
+const createUsernames = function (accs) {
+  accs.forEach(function (acc) {
+    acc.username = acc.owner
+      .toLowerCase()
+      .split(' ')
+      .map(name => name[0])
+      .join('');
+  });
+};
+createUsernames(accounts);
+console.log(accounts);
+
+const updateUI = function (acc) {
+  // Display movements
+  displayMovements(acc.movements);
+
+  // Display balance
+  calcAndDisplayBalance(acc);
+  // Display summary
+  calcDisplaySummary(acc);
+};
+
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
@@ -71,9 +113,129 @@ const inputClosePin = document.querySelector('.form__input--pin');
 //   ['GBP', 'Pound sterling'],
 // ]);
 
-// const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 /////////////////////////////////////////////////
+
+const calcAndDisplayBalance = function (acc) {
+  acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
+  labelBalance.textContent = `${acc.balance} €`;
+};
+
+const calcDisplaySummary = function (acc) {
+  const incomes = acc.movements
+    .filter(mov => mov > 0)
+    .reduce((acc, mov) => acc + mov, 0);
+  labelSumIn.textContent = `${incomes}€`;
+
+  const out = acc.movements
+    .filter(mov => mov < 0)
+    .reduce((acc, mov) => acc + mov, 0);
+  labelSumOut.textContent = `${Math.abs(out)}`;
+
+  const interest = acc.movements
+    .filter(mov => mov > 0)
+    .map(deposit => (deposit * acc.interestRate) / 100)
+    .filter((int, i, arr) => {
+      console.log(arr);
+      return int >= 1;
+    })
+    .reduce((acc, int) => acc + int, 0);
+  labelSumInterest.textContent = `${interest}`;
+};
+
+/** Implement Login */
+let currentAccount;
+btnLogin.addEventListener('click', function (e) {
+  // Prevent form from submitting;
+  e.preventDefault();
+
+  console.log('login');
+  currentAccount = accounts.find(
+    acc => acc.username === inputLoginUsername.value
+  );
+  console.log(currentAccount);
+
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    // console.log('LOGIN');
+
+    // Clear the input fields
+    inputLoginUsername.value = inputLoginPin.value = '';
+    //remove focus from field
+    inputLoginPin.blur();
+
+    // Display UI and message
+    labelWelcome.textContent = `Welcome back, ${
+      currentAccount.owner.split(' ')[0]
+    }`;
+    containerApp.style.opacity = 100;
+
+    updateUI(currentAccount);
+  }
+});
+
+/** Implementing Transfers */
+btnTransfer.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  const amount = Number(inputTransferAmount.value);
+  const receiverAcc = accounts.find(
+    acc => acc.username === inputTransferTo.value
+  );
+  // console.log(amount, receiverAcc);
+  inputTransferAmount.value = inputTransferTo.value = '';
+
+  if (
+    amount > 0 &&
+    receiverAcc &&
+    currentAccount.balance >= amount &&
+    receiverAcc?.username !== currentAccount.username
+  ) {
+    // Doing the transfer
+    currentAccount.movements.push(-amount);
+    receiverAcc.movements.push(amount);
+
+    updateUI(currentAccount);
+  }
+});
+
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  const amount = Number(inputLoanAmount.value);
+
+  if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
+    // Add movement
+    currentAccount.movements.push(amount);
+
+    // Update UI
+    updateUI(currentAccount);
+  }
+  inputLoanAmount.value = '';
+});
+
+/** The Find Index Method */
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  if (
+    inputCloseUsername.value === currentAccount.username &&
+    Number(inputClosePin.value) === currentAccount.pin
+  ) {
+    const index = accounts.findIndex(
+      acc => acc.username === currentAccount.username
+    );
+    console.log(index);
+
+    // Delete account
+    accounts.splice(index, 1);
+
+    // Hide UI
+    containerApp.style.opacity = 0;
+
+    inputCloseUsername.value = inputClosePin.value = '';
+  }
+});
 
 /** simple array methods
 let arr = ['a', 'b', 'c', 'd', 'e'];
@@ -168,3 +330,110 @@ currenciesUnique.forEach(function (value, _, set) {
   console.log(`${_}: ${value}`);
 });
 */
+
+/** The Map Method 
+const eurToUsd = 1.1;
+
+// const movementsUsd = movements.map(function (mov) {
+//   return mov * eurToUsd;
+// });
+
+const movementsUsd = movements.map(mov => mov * eurToUsd);
+
+console.log(movements);
+console.log(movementsUsd);
+
+const movementsUSDfor = [];
+for (const mov of movements) movementsUSDfor.push(mov * eurToUsd);
+console.log(movementsUSDfor);
+
+// when using map method, we also get the index, the attribute and the complete old map
+
+const movementsDescriptions = movements.map((mov, i) => {
+  return `Movement ${i + 1}: You ${mov > 0 ? 'Deposited' : 'Withdrew'} ${mov}`;
+});
+console.log(movementsDescriptions);
+
+//With map, we just build a complete map using on our strings.
+*/
+
+/** Filter function 
+
+// Use filter instead of for, if we need to filter some of the values
+const deposits = movements.filter(function (mov) {
+  return mov > 0;
+});
+console.log(movements);
+console.log(deposits);
+
+const withdrawals = movements.filter(mov => mov < 0);
+console.log(withdrawals);
+*/
+
+/**The Reduce Method 
+console.log(movements);
+
+// Parameters of reduce are different - acc = accumulator (like a snowball)
+// const balance = movements.reduce(function (acc, curr, i, arr) {
+//   console.log(`Iteration ${i}: ${acc}`);
+//   return acc + curr;
+// }, 0);
+//The number in the end of the reduce is the initial value of accumulator
+
+const balance = movements.reduce((acc, curr, i, arr) => acc + curr, 0);
+console.log(balance);
+
+// Maximum value of the movement array
+// The accumulator doesn't need to be a sum, it can be the maximum, minimum, a sum, etc.
+
+const maximum = movements.reduce((acc, cur) => (acc > cur ? acc : cur));
+console.log(maximum);
+*/
+
+/** Chaining Mehtods
+const eurToUsd = 1.1;
+
+// PIPELINE
+const totalDepositsUSD = movements
+  .filter(mov => mov > 0)
+  .map(mov => mov * eurToUsd)
+  .reduce((acc, mov) => acc + mov, 0);
+console.log(totalDepositsUSD);
+ */
+
+/** The Find Method
+// return the first occurence that can it can find
+console.log(movements.find(mov => mov < 0));
+
+console.log(accounts);
+
+// Try to remake this as a for of loop, using filter
+const account = accounts.find(acc => acc.owner === 'Jessica Davis');
+console.log(account);
+ */
+
+/** "Some and Every" Methods 
+console.log(movements);
+
+// Equality
+console.log(movements.includes(-130));
+
+// Condition
+console.log(movements.some(mov => mov === -130));
+
+// Some values satisfies the condition
+const anyDeposits = movements.some(mov => mov > 0);
+console.log(anyDeposits);
+
+// Every
+console.log(movements.every(mov => mov > 0));
+console.log(account4.movements.every(mov => mov > 0));
+
+// Separate callback
+const deposit = mov => mov > 0;
+console.log(movements.some(deposit));
+console.log(movements.every(deposit));
+console.log(movements.filter(deposit));
+*/
+
+/** Flat and Flatmap */
