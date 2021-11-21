@@ -196,8 +196,8 @@ let ownersEatTooMuch = [];
 let ownersEatTooLittle = [];
 
 dogs.forEach(dog => {
+  let isEating = '';
   dog.recFood = Math.trunc(dog.weight ** 0.75 * 28);
-  console.log();
 
   if (dog.owners.includes('Sarah'))
     console.log(
@@ -207,5 +207,18 @@ dogs.forEach(dog => {
           : 'Too Little!'
       }`
     );
+
+    if (dog.curFood > dog.recFood * 0.9 && dog.curFood < dog.recFood * 1.1) {
+      ownersEatTooMuch.push(dog.owners);
+      isEating = 'Too much!'
+    }
+    else {
+      ownersEatTooLittle.push(dog.owners);
+      isEating = 'Too little!'
+    }
+    console.log(`${dog.owners.join(' and ')} dog's is eating ${isEating}`);
+
 });
 console.log(dogs);
+console.log(ownersEatTooMuch);
+console.log(ownersEatTooLitt);
