@@ -192,33 +192,87 @@ const dogs = [
   { weight: 32, curFood: 340, owners: ['Michael'] },
 ];
 
+const excatlyRecPortion = dog =>
+  dog.curFood > dog.recFood * 0.9 && dog.curFood < dog.recFood * 1.1;
+
 let ownersEatTooMuch = [];
 let ownersEatTooLittle = [];
 
+// dogs.forEach(dog => {
+//   let sarahDogStr = 'Sarah dog is eating ';
+//   // console.log(dog);
+//   if (dog.owners.includes('Sarah')) {
+//     if (excatlyRecPortion(dog))
+//       sarahDogStr = sarahDogStr.concat('Okay Amount!');
+//     else if (dog.curFood < dog.recFood * 0.9)
+//       sarahDogStr = sarahDogStr.concat('Too Little!');
+//     else sarahDogStr = sarahDogStr.concat('Too much!');
+//     console.log(sarahDogStr);
+//   }
+// });
+//2
+const dogSarah = dogs.find(dog => dog.owners.includes('Sarah'));
+// console.log(dogSarah);
+console.log(
+  `Sarah's dog is eating ${
+    dogSarah.curFood > dogSarah.recFood ? 'too much' : 'too little'
+  }`
+);
+
 dogs.forEach(dog => {
   let isEating = '';
+  // let sarahDogStr = 'Sarah dog is eating ';
   dog.recFood = Math.trunc(dog.weight ** 0.75 * 28);
 
-  if (dog.owners.includes('Sarah'))
-    console.log(
-      `Sarah's dog is eating ${
-        dog.curFood > dog.recFood * 0.9 && dog.curFood < dog.recFood * 1.1
-          ? 'Too Much!'
-          : 'Too Little!'
-      }`
-    );
-
-    if (dog.curFood > dog.recFood * 0.9 && dog.curFood < dog.recFood * 1.1) {
-      ownersEatTooMuch.push(dog.owners);
-      isEating = 'Too much!'
-    }
-    else {
-      ownersEatTooLittle.push(dog.owners);
-      isEating = 'Too little!'
-    }
-    console.log(`${dog.owners.join(' and ')} dog's is eating ${isEating}`);
-
+  if (dog.curFood < dog.recFood * 0.9) {
+    ownersEatTooMuch.push(dog.owners);
+    isEating = 'Too much!';
+  } else {
+    ownersEatTooLittle.push(dog.owners);
+    isEating = 'Too little!';
+  }
+  console.log(`${dog.owners.join(' and ')} dog's is eating ${isEating}`);
 });
 console.log(dogs);
-console.log(ownersEatTooMuch);
-console.log(ownersEatTooLitt);
+
+const logString = function (arr, muchOrLittle) {
+  let dogOrDogs = '';
+  dogOrDogs = 'dog';
+  if (arr.length > 1) dogOrDogs = 'dogs';
+  const str = arr.join(' and ').replaceAll(',', ' and ');
+  return str.concat(`'s ${dogOrDogs} eats too ${muchOrLittle}`);
+};
+
+console.log(logString(ownersEatTooMuch, 'Much'));
+console.log(logString(ownersEatTooLittle, 'Little'));
+
+console.log(dogs.includes(excatlyRecPortion));
+console.log(dogs.includes(excatlyRecPortion));
+
+const dogsSorted = dogs.sort(dogs.recFood);
+console.log(dogsSorted);
+
+// 3.
+ownersEatTooMuch = dogs
+  .filter(dog => dog.curFood > dog.recFood)
+  .flatMap(dog => dog.owners);
+ownersEatTooLittle = dogs
+  .filter(dog => dog.curFood < dog.recFood)
+  .flatMap(dog => dog.owners);
+// 4.
+console.log(`${ownersEatTooMuch.join(' and ')}'s dogs eat too much`);
+console.log(`${ownersEatTooLittle.join(' and ')}'s dogs eat too much`);
+
+//5.
+console.log(dogs.some(dog => dog.curFood === dog.recFood));
+
+// 6.
+console.log(dogs.some(dog => excatlyRecPortion(dog)));
+
+// 7.
+console.log(dogs.filter(excatlyRecPortion));
+
+// 8. Sort by recomend portion
+// Create an copy array with slice
+const dogsCopy = dogs.slice().sort((a, b) => a.recFood - b.recFood);
+console.log(dogsCopy);
