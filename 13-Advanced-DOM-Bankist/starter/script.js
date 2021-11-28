@@ -1,12 +1,15 @@
 'use strict';
 
-///////////////////////////////////////
-// Modal window
-
 const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
 const btnCloseModal = document.querySelector('.btn--close-modal');
 const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
+const btnScrollTo = document.querySelector('.btn--scroll-to');
+const section1 = document.querySelector('#section--1');
+
+///////////////////////////////////////
+// Modal window
+
 
 const openModal = function (e) {
   e.preventDefault();
@@ -32,26 +35,113 @@ document.addEventListener('keydown', function (e) {
     closeModal();
   }
 });
+
+////////////////////////////////////////////////////////////////////////////////////
+// Button Scrolling 
+/** Implementing Smooth Scrolling */
+
+btnScrollTo.addEventListener('click', function (e) {
+  const s1coords = section1.getBoundingClientRect();
+  console.log(s1coords);
+
+  console.log(e.target.getBoundingClientRect());
+
+  console.log('current scroll (x/y): ', window.pageXOffset, window.pageYOffset);
+  console.log(
+    'height/width viewport: ',
+    document.documentElement.clientHeight,
+    document.documentElement.clientWidth
+  );
+
+  // Scrolling
+  // window.scrollTo(s1coords.left, s1coords.top); // If in the middle of the first page, only scrolls half of the screen1
+
+  // window.scrollTo({
+  //   left: s1coords.left + window.pageXOffset,
+  //   left: s1coords.top + s1coords.pageYOffset,
+  //   behavior: 'smooth',
+  // });
+
+  // Use this to scroll in modern browser/javascript
+  section1.scrollIntoView({ behavior: 'smooth' });
+});
+
+/////////////////////////////////////////////////////////////////////////
+
+// Page navigation
+// document.querySelectorAll('.nav__link').forEach( function (el) {
+//   el.addEventListener('click', function(e) {
+//     e.preventDefault();
+//     const id = this.getAttribute('href');
+//     console.log(id);
+//     document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+//   })
+// })
+
+// Event Delegation
+// 1. add event listener to common parent element
+// 2. determine what element originated the event
+document.querySelector('.nav__links').addEventListener('click', function (e) {
+  console.log(e.target);
+  e.preventDefault();
+
+  // Matching strategy
+  if(e.target.classList.contains('nav__link')) {
+    console.log('link');
+    const id = e.target.getAttribute('href');
+    console.log(id);
+    document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+  }
+});
+
+// Tabbed component
+const tabs = document.querySelectorAll('.operations__tab');
+const tabsContainer = document.querySelector('.operations__tab-container');
+const tabsContent = document.querySelectorAll('.operations__content');
+
+tabsContainer.addEventListener('click', function(e) {
+  const clicked = e.target.closest('.operations__tab');
+  // console.log(clicked);
+
+  // Guard clause
+  if(!clicked) return;
+
+  // Remove active classes
+  tabs.forEach(t => t.classList.remove('operations__tab--active'));
+  tabsContent.forEach(c => c.classList.remove('operations__content--active'))
+
+  clicked.classList.add('operations__tab--active');
+
+  // Activate content area
+  //console.log(clicked.dataset.tab);
+  document.querySelector(`.operations__content--${clicked.dataset.tab}`).classList.add('operations__content--active');
+  
+});
+
+// Menu fade animation
+  const nav = document.querySelector('.nav');
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // DOM tree is generated from an HTML document, which we can interact with
 // DOM is a very complex API that contains lots of methods and properties to interact with the DOM tree
 
-console.log(document.documentElement);
-console.log(document.head);
-console.log(document.body);
+// console.log(document.documentElement);
+// console.log(document.head);
+// console.log(document.body);
 
 // When you delete from the nodelist using query selector, it will remain saved in the variable
 const header = document.querySelector('.header');
 const allSections = document.querySelectorAll('.section');
-console.log(allSections);
+// console.log(allSections);
 
 // When you delete from the getelements, it will be deleted from the list of allButtons
 document.getElementById('section--1');
 const allButtons = document.getElementsByTagName('button');
-console.log(allButtons);
+// console.log(allButtons);
 
-console.log(document.getElementsByClassName('btn'));
+// console.log(document.getElementsByClassName('btn'));
 
 // Creating and inserting elements
 const message = document.createElement('div');
@@ -73,7 +163,7 @@ document
     message.remove();
   });
 
-/** Styles, Attributes and Classes */
+/** Styles, Attributes and Classes 
 message.style.backgroundColor = '#37383d';
 message.style.width = '120%';
 
@@ -124,55 +214,108 @@ logo.classList.toggle('c');
 logo.classList.contains('c');
 // Don't use this, it will overwrite all classes of logo
 logo.className = 'Fabio';
+*/
 
-/** Implementing Smooth Scrolling */
-const btnScrollTo = document.querySelector('.btn--scroll-to');
-const section1 = document.querySelector('#section--1');
-
-btnScrollTo.addEventListener('click', function (e) {
-  const s1coords = section1.getBoundingClientRect();
-  console.log(s1coords);
-
-  console.log(e.target.getBoundingClientRect());
-
-  console.log('current scroll (x/y): ', window.pageXOffset, window.pageYOffset);
-  console.log(
-    'height/width viewport: ',
-    document.documentElement.clientHeight,
-    document.documentElement.clientWidth
-  );
-
-  // Scrolling
-  // window.scrollTo(s1coords.left, s1coords.top); // If in the middle of the first page, only scrolls half of the screen1
-
-  // window.scrollTo({
-  //   left: s1coords.left + window.pageXOffset,
-  //   left: s1coords.top + s1coords.pageYOffset,
-  //   behavior: 'smooth',
-  // });
-
-  // Use this to scroll in modern browser/javascript
-  section1.scrollIntoView({ behavior: 'smooth' });
-});
-
-/** Types of Events and Events Handlers */
+/** Types of Events and Events Handlers 
 const h1 = document.querySelector('h1');
 
 const alertH1 = function (e) {
   alert('addEventListener: Great! You are reading the heading :D');
-
+  
+  // Remove event listener
   h1.removeEventListener('mouseenter', alertH1);
 };
 
 // Mouse enter is like hover in js
 h1.addEventListener('mouseenter', alertH1);
 
-setTimeout(() => h1.removeEventListener('mouseenter', alertH1), 3000);
+setTimeout(() => h1.removeEventListener('mouseenter', alertH1), 10);
 
 // h1.onmouseenter = function (e) {
 //   alert('addEventListener: Great! You are reading the heading :D');
 // };
 
-// Remove event listener
 
-/** Event Propagation: Bubbling and Capturing */
+*/
+
+/** Event Propagation: Bubbling and Capturing and Event Propagation in Practice
+const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
+const randomColor = () => `rgb(${randomInt(0, 255)}, ${randomInt(0, 255)}, ${randomInt(0, 255)})`;
+console.log(randomColor());
+
+document.querySelector('.nav__link').addEventListener('click', function(e) {
+  this.style.backgroundColor = randomColor();
+  console.log('LINK', e.target, e.currentTarget);
+
+  // Stop propagation -- not a good practice
+  e.stopPropagation();
+});
+
+document.querySelector('.nav__links').addEventListener('click', function(e) {
+  this.style.backgroundColor = randomColor();
+  console.log('CONTAINER', e.target, e.currentTarget);
+});
+
+// capturing (rarely using) - false by default. When true, occurs first
+document.querySelector('.nav').addEventListener('click', function(e) {
+  this.style.backgroundColor = randomColor();
+  console.log('NAV', e.target, e.currentTarget);
+}, false);
+ */
+
+/** Event Delegation: Implemeting Page Navigation */
+
+/** DOM Traversing 
+const h1 = document.querySelector('h1');
+
+// Going downwards child
+console.log(h1.querySelectorAll('.highlight'));
+console.log(h1.childNodes);
+console.log(h1.children);
+h1.firstElementChild.style.color = 'white';
+h1.lastElementChild.style.color = 'orangered';
+
+// Going upwards: parents
+console.log(h1.parentNode);
+console.log(h1.parentElement);
+
+h1.closest('.header').style.background = 'var(--gradient-secondary)';
+h1.closest('h1').style.background = 'var(--gradient-primary)';
+
+// Going sideways: siblings
+console.log(h1.previousElementSibling);
+console.log(h1.nextElementSibling);
+
+console.log(h1.nextSibling);
+console.log(h1.previousSibling);
+
+console.log(h1.parentElement.children);
+[...h1.parentElement.children].forEach(function (el) {
+  if (el !== h1) el.style.transform = 'scale(0,5)';
+});
+*/
+
+/** Building a Tabbed Component */
+
+/** Passing Arguments to Event Handlers */
+
+/** Implementing a Sticky Navigation: The Scroll Event */
+
+/** A Better Way: The Intersection Observer API */
+
+/** Revealing Elements on Scroll */
+
+/** Lazy Loading Images */
+
+/** Building a SLider Component: Part 1 */
+
+/** Building a SLider Component: Part 2 */
+
+/** Lifecycle DOM Events */
+
+/** Efficient Script Loading: defer and async */
+
+
+
+
+
