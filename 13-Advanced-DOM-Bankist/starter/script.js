@@ -6,10 +6,26 @@ const btnCloseModal = document.querySelector('.btn--close-modal');
 const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
 const btnScrollTo = document.querySelector('.btn--scroll-to');
 const section1 = document.querySelector('#section--1');
+const nav = document.querySelector('.nav');
+// Tabbed component
+const tabs = document.querySelectorAll('.operations__tab');
+const tabsContainer = document.querySelector('.operations__tab-container');
+const tabsContent = document.querySelectorAll('.operations__content');
+// When you delete from the nodelist using query selector, it will remain saved in the variable
+const allSections = document.querySelectorAll('.section');
+// When you delete from the getelements, it will be deleted from the list of allButtons
+document.getElementById('section--1');
+const allButtons = document.getElementsByTagName('button');
+// console.log(allButtons);
+
+// console.log(document.getElementsByClassName('btn'));
+
+// Creating and inserting elements
+const message = document.createElement('div');
+message.classList.add('cookie-message');
 
 ///////////////////////////////////////
 // Modal window
-
 
 const openModal = function (e) {
   e.preventDefault();
@@ -37,7 +53,7 @@ document.addEventListener('keydown', function (e) {
 });
 
 ////////////////////////////////////////////////////////////////////////////////////
-// Button Scrolling 
+// Button Scrolling
 /** Implementing Smooth Scrolling */
 
 btnScrollTo.addEventListener('click', function (e) {
@@ -86,7 +102,7 @@ document.querySelector('.nav__links').addEventListener('click', function (e) {
   e.preventDefault();
 
   // Matching strategy
-  if(e.target.classList.contains('nav__link')) {
+  if (e.target.classList.contains('nav__link')) {
     console.log('link');
     const id = e.target.getAttribute('href');
     console.log(id);
@@ -94,33 +110,106 @@ document.querySelector('.nav__links').addEventListener('click', function (e) {
   }
 });
 
-// Tabbed component
-const tabs = document.querySelectorAll('.operations__tab');
-const tabsContainer = document.querySelector('.operations__tab-container');
-const tabsContent = document.querySelectorAll('.operations__content');
-
-tabsContainer.addEventListener('click', function(e) {
+tabsContainer.addEventListener('click', function (e) {
   const clicked = e.target.closest('.operations__tab');
   // console.log(clicked);
 
   // Guard clause
-  if(!clicked) return;
+  if (!clicked) return;
 
   // Remove active classes
   tabs.forEach(t => t.classList.remove('operations__tab--active'));
-  tabsContent.forEach(c => c.classList.remove('operations__content--active'))
+  tabsContent.forEach(c => c.classList.remove('operations__content--active'));
 
   clicked.classList.add('operations__tab--active');
 
   // Activate content area
   //console.log(clicked.dataset.tab);
-  document.querySelector(`.operations__content--${clicked.dataset.tab}`).classList.add('operations__content--active');
-  
+  document
+    .querySelector(`.operations__content--${clicked.dataset.tab}`)
+    .classList.add('operations__content--active');
 });
 
 // Menu fade animation
-  const nav = document.querySelector('.nav');
+const handleHover = function (e) {
+  if (e.target.classList.contains('nav__link')) {
+    const link = e.target;
+    const siblings = link.closest('.nav').querySelectorAll('.nav__link');
+    const logo = link.closest('.nav').querySelector('img');
 
+    siblings.forEach(el => {
+      if (el !== link) el.style.opacity = this;
+    });
+    logo.style.opacity = this;
+  }
+};
+
+// nav.addEventListener('mouseover', e => handleHover(e, 0.5));
+// Passing "argument" into handler
+nav.addEventListener('mouseover', handleHover.bind(0.5));
+
+nav.addEventListener('mouseout', handleHover.bind(1));
+
+// Sticky Navigation
+// const initialCords = section1.getBoundingClientRect();
+// // console.log(initialCords);
+// window.addEventListener('scroll', function () {
+//   // console.log(window.scrollY);
+
+//   if (window.scrollY > initialCords.top) nav.classList.add('sticky');
+//   else nav.classList.remove('sticky');
+// });
+
+// Sticky Navigation: Intersection Observer API
+// Only get an event when really intercepting
+// const obsCallback = function (entries, observer) {
+//   entries.forEach(entry => console.log(entry));
+// };
+// const obsOptions = {
+//   root: null,
+//   // When entering the view and getting out the view
+//   threshold: [0, 0.2],
+// };
+// const observer = new IntersectionObserver(obsCallback, obsOptions);
+// observer.observe(section1);
+
+const header = document.querySelector('.header');
+const navHeight = nav.getBoundingClientRect().height;
+// console.log(navHeight);
+
+const stickyNav = function (entries) {
+  const [entry] = entries;
+  // console.log(entry);
+  if (!entry.isIntersecting) nav.classList.add('sticky');
+  else nav.classList.remove('sticky');
+};
+
+const headerObserver = new IntersectionObserver(stickyNav, {
+  root: null,
+  threshold: 0,
+  rootMargin: `-${navHeight}px`,
+});
+headerObserver.observe(header);
+
+// Reveal sections
+const revealSection = function (entries, observer) {
+  const [entry] = entries;
+  console.log(entry);
+
+  if (!entry.isIntersecting) return entry;
+
+  entry.target.classList.remove('section--hidden');
+  observer.unobserve(entry.target);
+};
+
+const sectionObserver = new IntersectionObserver(revealSection, {
+  root: null,
+  threshold: 0.15,
+});
+allSections.forEach(function (section) {
+  sectionObserver.observe(section);
+  section.classList.add('section--hidden');
+});
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -131,21 +220,8 @@ tabsContainer.addEventListener('click', function(e) {
 // console.log(document.head);
 // console.log(document.body);
 
-// When you delete from the nodelist using query selector, it will remain saved in the variable
-const header = document.querySelector('.header');
-const allSections = document.querySelectorAll('.section');
 // console.log(allSections);
 
-// When you delete from the getelements, it will be deleted from the list of allButtons
-document.getElementById('section--1');
-const allButtons = document.getElementsByTagName('button');
-// console.log(allButtons);
-
-// console.log(document.getElementsByClassName('btn'));
-
-// Creating and inserting elements
-const message = document.createElement('div');
-message.classList.add('cookie-message');
 // message.textContent = 'We use cookies for improved functionality and analytics.';
 message.innerHTML =
   'We use cookies for improved functionality and analytics. <button class="btn btn--close-cookie">Got it!</button>';
@@ -314,8 +390,3 @@ console.log(h1.parentElement.children);
 /** Lifecycle DOM Events */
 
 /** Efficient Script Loading: defer and async */
-
-
-
-
-
