@@ -194,7 +194,7 @@ headerObserver.observe(header);
 // Reveal sections
 const revealSection = function (entries, observer) {
   const [entry] = entries;
-  console.log(entry);
+  // console.log(entry);
 
   if (!entry.isIntersecting) return entry;
 
@@ -208,8 +208,125 @@ const sectionObserver = new IntersectionObserver(revealSection, {
 });
 allSections.forEach(function (section) {
   sectionObserver.observe(section);
-  section.classList.add('section--hidden');
+  // section.classList.add('section--hidden');
 });
+
+// Lazy loadgin images
+
+const imgTargets = document.querySelectorAll('img[data-src]');
+// console.log(imgTargets);
+
+const loadImg = function (entries, observer) {
+  const [entry] = entries;
+  // console.log(entry);
+
+  if (!entry.isIntersecting) return entry;
+
+  // Replace src with data-src
+  entry.target.src = entry.target.dataset.src;
+
+  // Remove entry - The load happens too fast  entry.target.classList.remove('lazy-img');
+  entry.target.addEventListener('load', function () {
+    // It is better to remove only after the image loaded
+    entry.target.classList.remove('lazy-img');
+  });
+
+  observer.unobserve(entry.target);
+};
+
+const imgObserver = new IntersectionObserver(loadImg, {
+  root: null,
+  threshold: 0,
+  rootMargin: '200px',
+});
+
+imgTargets.forEach(img => imgObserver.observe(img));
+
+// Slider
+const slider = function () {
+  const slides = document.querySelectorAll('.slide');
+  const btnLeft = document.querySelector('.slider__btn--left');
+  const btnRight = document.querySelector('.slider__btn--right');
+  const dotContainer = document.querySelector('.dots');
+
+  let curSlide = 0;
+  const maxSlide = slides.length - 1;
+
+  // const slider = document.querySelector('.slider');
+  // slider.style.transform = 'scale(0.4) translateX(-800px)';
+  // slider.style.overflow = 'visible';
+
+  // TranslateX -> 0%, 100%, 200%, 300%
+
+  const createDots = function () {
+    slides.forEach(function (_, i) {
+      dotContainer.insertAdjacentHTML(
+        'beforeend',
+        `<button class="dots__dot" data-slide="${i}"></button>`
+      );
+    });
+  };
+  createDots();
+
+  const activateDot = function (slide = 0) {
+    document
+      .querySelectorAll('.dots__dot')
+      .forEach(dot => dot.classList.remove('dots__dot--active'));
+
+    document
+      .querySelector(`.dots__dot[data-slide="${slide}"]`)
+      .classList.add('dots__dot--active');
+  };
+  activateDot();
+
+  const goToSlide = function (slide) {
+    slides.forEach(
+      (s, i) => (s.style.transform = `translateX(${100 * (i - slide)}%)`)
+    );
+  };
+
+  goToSlide(0);
+
+  const nextSlide = function () {
+    if (curSlide === maxSlide) curSlide = 0;
+    else curSlide++;
+
+    goToSlide(curSlide);
+    activateDot(curSlide);
+  };
+
+  const prevSlide = function () {
+    if (curSlide === 0) curSlide = maxSlide;
+    else curSlide--;
+    goToSlide(curSlide);
+    activateDot(curSlide);
+  };
+
+  // Event Handlers
+  // Next Slide
+  btnRight.addEventListener('click', nextSlide);
+  // Previous
+  btnLeft.addEventListener('click', prevSlide);
+
+  document.addEventListener('keydown', function (e) {
+    // keydown { target: body, key: "ArrowLeft", charCode: 0, keyCode: 37 }
+    //   keydown { target: body, key: "ArrowRight", charCode: 0, keyCode: 39 }
+    // console.log(e);
+    if (e.key === 'ArrowLeft') prevSlide();
+    e.key === 'ArrowRight' && nextSlide();
+  });
+
+  dotContainer.addEventListener('click', function (e) {
+    if (e.target.classList.contains('dots__dot')) {
+      // console.log('DOT');
+      // Destructuring
+      const { slide } = e.target.dataset;
+      goToSlide(slide);
+      activateDot(slide);
+    }
+  });
+};
+slider();
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -387,6 +504,34 @@ console.log(h1.parentElement.children);
 
 /** Building a SLider Component: Part 2 */
 
-/** Lifecycle DOM Events */
+/** Lifecycle DOM Events 
+// Review this class
+document.addEventListener('DOMContentLoaded', function (e) {
+  console.log('HTML parsed and DOM tree built', e);
+});
+
+window.addEventListener('load', function (e) {
+  console.log('Page fully loaded', e);
+});
+
+// window.addEventListener('beforeunload', function (e) {
+//   e.preventDefault();
+//   console.log(e);
+//   e.returnValue = '';
+// });
+*/
 
 /** Efficient Script Loading: defer and async */
+// // Puts the script at the end of the body, because of the parsing HTML and execution of the page.
+// // Scripts are fetched and executed after the HTML is completely parsed
+
+// Async
+// // The script is fetched during the parsing of the HTML
+// // Scripts are fetched asynchronously and executed immediatly
+// // Scripts are not guaranteed to execute in order
+// // Used for 3rd party scripts where order doesn't matter (e.g. Google Analytics)
+
+// Defer
+// // Scripts are fetched asynchronously and executed after the HTML is completely parsed
+// // Scripts are executed in order
+// // This is overall the bst solution! Use it mainly when order of execution matters.
