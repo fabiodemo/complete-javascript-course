@@ -1,6 +1,5 @@
 'use strict';
 
-
 const btn = document.querySelector('.btn-country');
 const countriesContainer = document.querySelector('.countries');
 
@@ -31,54 +30,53 @@ const renderCountry = function (data, className = '') {
 };
 
 const getJSON = function (url, errorMsg = 'Something went wrong') {
-    return fetch(url).then(response => {
-      if (!response.ok) throw new Error(`${errorMsg} (${response.status})`);
-  
-      return response.json();
-    });
-  };
-  
-  //Simplified version
-  const getCountryData = function (country) {
-    getJSON(`https://restcountries.com/v2/name/${country}`, 'Country not found')
-      .then(data => {
-        renderCountry(data[0]);
-        const neighbour = data[0].borders[0];
-        // const neighbour = 'dsesfs';
-  
-        if (!neighbour) throw new Error('No neighbour found!');
-        // Country 2
-        return getJSON(
-          `https://restcountries.com/v2/alpha/${neighbour}`,
-          'Country not found'
-        );
-        // Promises always return something, and it will become the fullfilment value
-        // return 23;
-        // fetch(`https://restcountries.com/v2/alpha/${neighbour}`).then(response => response.json(); // DO NOT DO THIS, IT WILL GET BACK TO CHAINING HELL
-      })
-      .then(data => renderCountry(data, 'neighbour'))
-      .catch(err => {
-        console.error(`${err} 💥💥💥`);
-        renderError(`Something went wrong 💥💥 ${err.message}. Try again!`);
-      })
-      .finally(() => {
-        countriesContainer.style.opacity = 1;
-      });
-  };
-  
-  // Promises do not get rid of callback, but they do get rid of callback hell
-  
-  /** Chaining Promises */
-  
-  /** Handling Rejected Promises */
-  btn.addEventListener('click', function () {
-    // getCountryData('Brasil');
-    // getCountryData('Australia');
-    whereAmI(52.508, 13.381);
-    // whereAmI(19.037, 72.873);
-    // whereAmI(-33.933, 18.474);
-  });
+  return fetch(url).then(response => {
+    if (!response.ok) throw new Error(`${errorMsg} (${response.status})`);
 
+    return response.json();
+  });
+};
+
+//Simplified version
+const getCountryData = function (country) {
+  getJSON(`https://restcountries.com/v2/name/${country}`, 'Country not found')
+    .then(data => {
+      renderCountry(data[0]);
+      const neighbour = data[0].borders[0];
+      // const neighbour = 'dsesfs';
+
+      if (!neighbour) throw new Error('No neighbour found!');
+      // Country 2
+      return getJSON(
+        `https://restcountries.com/v2/alpha/${neighbour}`,
+        'Country not found'
+      );
+      // Promises always return something, and it will become the fullfilment value
+      // return 23;
+      // fetch(`https://restcountries.com/v2/alpha/${neighbour}`).then(response => response.json(); // DO NOT DO THIS, IT WILL GET BACK TO CHAINING HELL
+    })
+    .then(data => renderCountry(data, 'neighbour'))
+    .catch(err => {
+      console.error(`${err} 💥💥💥`);
+      renderError(`Something went wrong 💥💥 ${err.message}. Try again!`);
+    })
+    .finally(() => {
+      countriesContainer.style.opacity = 1;
+    });
+};
+
+// Promises do not get rid of callback, but they do get rid of callback hell
+
+/** Chaining Promises */
+
+/** Handling Rejected Promises */
+btn.addEventListener('click', function () {
+  // getCountryData('Brasil');
+  // getCountryData('Australia');
+  whereAmI(52.508, 13.381);
+  // whereAmI(19.037, 72.873);
+  // whereAmI(-33.933, 18.474);
+});
 
 /** Coding Challenge #1
 In this challenge you will build a function 'whereAmI' which renders a country
@@ -124,17 +122,22 @@ Your tasks:*/
 
 // 7. Render the country and catch any errors, just like we have done in the last
 // lecture (you can even copy this code, no need to type the same code)
-const whereAmI = function (lat, lng){
-  const result = fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`).then(res => {
-  if(!res.ok) throw new Error (`Something went wrong: ${res.status}. You can only make 3 requests per second`);
-  return res.json();
-}).then(data => {
-    console.log(data)
-    console.log(`You are in ${data.city}, ${data.country}`);
-    getCountryData(data.country);
-  }).catch(err => console.error(err));
-}
-
+const whereAmI = function (lat, lng) {
+  const result = fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`)
+    .then(res => {
+      if (!res.ok)
+        throw new Error(
+          `Something went wrong: ${res.status}. You can only make 3 requests per second`
+        );
+      return res.json();
+    })
+    .then(data => {
+      console.log(data);
+      console.log(`You are in ${data.city}, ${data.country}`);
+      getCountryData(data.country);
+    })
+    .catch(err => console.error(err));
+};
 
 /**  Coding Challenge #2
 For this challenge you will actually have to watch the video! Then, build the image
@@ -167,6 +170,46 @@ image path. Set the network speed to “Fast 3G” in the dev tools Network tab,
 otherwise images load too fast
 GOOD LUCK 😀 */
 
+const imgContainer = document.querySelector('.images');
+
+const createImage = function (imgPath) {
+  return new Promise(function (resolve, reject) {
+    const img = document.createElement('img');
+    img.src = imgPath;
+
+    img.addEventListener('load', function () {
+      imgContainer.append(img);
+      resolve(img);
+    });
+
+    img.addEventListener('error', function () {
+      reject(new Error('Image not found!'));
+    });
+  });
+};
+
+let currentImg;
+
+// createImage('img/img-1.jpg')
+//   .then(img => {
+//     currentImg = img;
+//     console.log('Image 1 loaded');
+//     return wait(2);
+//   })
+//   .then(() => {
+//     currentImg.style.display = 'none';
+//     return createImage('img/img-2.jpg');
+//   })
+//   .then(img => {
+//     currentImg = img;
+//     console.log('Image 2 loaded');
+//     return wait(2);
+//   })
+//   .then(() => {
+//     currentImg.style.display = 'none';
+//   })
+//   .catch(err => console.error(err));
+
 /** Coding Challenge #3
 Your tasks:
 PART 1
@@ -177,7 +220,37 @@ using async/await (only the part where the promise is consumed, reuse the
 you like more
 3. Don't forget to test the error handler, and to set the network speed to “Fast 3G”
 in the dev tools Network tab
-PART 2
+*/
+const wait = function (seconds) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, seconds * 1000);
+  });
+};
+
+const loadNPause = async function () {
+  try {
+    let img = await createImage('img/img-1.jpg');
+    console.log('img 1 loaded');
+    await wait(2);
+    img.style.display = 'none';
+
+    img = await createImage('img/img-2.jpg');
+    console.log('img 2 loaded');
+    await wait(2);
+    img.style.display = 'none';
+
+    img = await createImage('img/img-3.jpg');
+    console.log('img 3 loaded');
+    await wait(2);
+    img.style.display = 'none';
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+loadNPause();
+
+/* PART 2
 1. Create an async function 'loadAll' that receives an array of image paths
 'imgArr'
 2. Use .map to loop over the array, to load all the images with the
@@ -188,4 +261,20 @@ PART 2
 Test data Part 2: ['img/img-1.jpg', 'img/img-2.jpg', 'img/img-
 3.jpg']. To test, turn off the 'loadNPause' function
 GOOD LUCK 😀 */
+// Use fast 3g
 
+const loadAll = async function (imgArr) {
+  try {
+    // Async inside arrow function, return the fullfiled resource of the promise, (three promises in this case)
+    const imgs = imgArr.map(async img => await createImage(img));
+    console.log(imgs);
+    // Get element out of the promise
+    const imgsEl = await Promise.all(imgs);
+    imgsEl.forEach(img => img.classList.add('parallel'));
+    console.log(imgsEl);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+loadAll(['img/img-1.jpg', 'img/img-2.jpg', 'img/img-3.jpg']);
