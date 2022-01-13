@@ -1,0 +1,29 @@
+{
+  "name": "complete-javascript-course",
+  "version": "1.0.0",
+  "description": "This repo contains starter files and final code for all sections and projects contained in the course.",
+  "main": "index.js",
+  "scripts": {
+    "start": "parcel index.html",
+    "build": "parcel build index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fabiodemo/complete-javascript-course.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fabiodemo/complete-javascript-course/issues"
+  },
+  "homepage": "https://github.com/fabiodemo/complete-javascript-course#readme",
+  "dependencies": {
+    "core-js": "^3.20.2",
+    "leaflet": "^1.7.1",
+    "lodash-es": "^4.17.21",
+    "regenerator-runtime": "^0.13.9"
+  },
+  "devDependencies": {
+    "parcel": "^2.1.1"
+  }
+}
